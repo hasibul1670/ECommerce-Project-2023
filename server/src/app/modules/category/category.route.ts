@@ -1,22 +1,25 @@
 import express from 'express';
-import { ENUM_USER_ROLE } from '../../../enums/user';
-import auth from '../../middlewares/auth';
+import isAdmin from '../../middlewares/loggedIn/isAdmin';
+import isLoggedIn from '../../middlewares/loggedIn/isLoggedIn';
 import validateRequest from '../../middlewares/validateRequest';
 import { CategoryController } from './category.controller';
 import { CategoryValidaion } from './category.validation';
 
 const router = express.Router();
 
+router.get('/:slug', CategoryController.getSingleCategory);
+router.get('/', CategoryController.getAllCategory);
+
 router.post(
   '/create-category',
-  auth(ENUM_USER_ROLE.ADMIN),
+  isLoggedIn,
+  isAdmin,
   validateRequest(CategoryValidaion.createCategoryZodSchema),
   CategoryController.createCategory
 );
-router.get('/:slug', CategoryController.getSingleCategory);
 
 router.patch(
-  '/:id',
+  '/:slug',
   validateRequest(CategoryValidaion.updateCategoryZodSchema),
   CategoryController.updateCategory
 );

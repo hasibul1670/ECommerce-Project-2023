@@ -3,16 +3,17 @@ import { CategoryModel, ICategory } from './category.interface';
 
 export const CategorySchema = new Schema<ICategory, CategoryModel>(
   {
+    id: {
+      type: String,
+    },
     name: {
       type: String,
       required: [true, 'Category name is required'],
-      trim: true,
       unique: true,
       minLength: [3, 'Category name must minimum 3 characters'],
     },
     slug: {
       type: String,
-      required: [true, 'Category Slug name is required'],
       lowercase: true,
       unique: true,
     },

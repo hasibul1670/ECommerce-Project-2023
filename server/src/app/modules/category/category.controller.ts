@@ -21,33 +21,34 @@ const sendCategoryResponse = async (
 
 const createCategory = catchAsync(async (req: Request, res: Response) => {
   const { ...Category } = req.body;
-  console.log('Hello', Category);
   const result = await CategoryService.createCategory(Category);
   sendCategoryResponse(res, `Category is created successfully`, result);
 });
 
 const getSingleCategory = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const result = await CategoryService.getSingleCategory(id);
+  const { slug } = req.params;
+  const result = await CategoryService.getSingleCategory(slug);
   sendCategoryResponse(
     res,
     ' Single Category retrieved successfully !',
     result
   );
 });
+const getAllCategory = catchAsync(async (req: Request, res: Response) => {
+  const result = await CategoryService.getAllCategory();
+  sendCategoryResponse(res, ' All Categories retrieved successfully !', result);
+});
 
 const updateCategory = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const updatedData = req.body;
-
-  const result = await CategoryService.updateCategory(id, updatedData);
-
+  const { slug } = req.params;
+  const payload = req.body;
+  const result = await CategoryService.updateCategory(slug, payload);
   sendCategoryResponse(res, 'Category updated successfully !', result);
 });
 
 export const CategoryController = {
   createCategory,
   getSingleCategory,
-
+  getAllCategory,
   updateCategory,
 };
