@@ -103,9 +103,7 @@ const verifyUser = async (token: string) => {
   if (!token) {
     throw new ApiError(StatusCodes.UNAUTHORIZED, 'Token is required!!');
   }
-
   let verifiedUser = null;
-
   verifiedUser = jwtHelpers.verifyToken(token, config.jwt.secret as Secret);
 
   const UserId = await generateUserId();
@@ -114,10 +112,28 @@ const verifyUser = async (token: string) => {
   const { password, ...result } = createdUser.toObject();
   return createdUser;
 };
+
+const banUserById = async (id: string): Promise<IUser | null> => {
+  const updateData = { isBanned: true };
+  const result = await User.findByIdAndUpdate({ _id: id }, updateData, {
+    new: true,
+  });
+  return result;
+};
+const unbanUserById = async (id: string): Promise<IUser | null> => {
+  const updateData = { isBanned: false };
+  const result = await User.findByIdAndUpdate({ _id: id }, updateData, {
+    new: true,
+  });
+  return result;
+};
+
 export const UserService = {
   createUser,
   getAllUser,
+  unbanUserById,
   getSingleUser,
   updateUser,
+  banUserById,
   verifyUser,
 };

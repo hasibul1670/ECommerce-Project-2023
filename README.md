@@ -22,14 +22,12 @@ This project is an ecommerce application aimed at providing a platform for onlin
 ## Features
 
 - User registration and authentication
-- Product browsing and searching
-- Product categories and filtering
-- Shopping cart functionality
-- Order placement and tracking
-- Secure payment integration
-- User account management
-- Admin panel for managing products, categories, and users
-- Order management for administrators
+ - create user 
+ - email verification for registration
+ - banned / unbanned users
+ - user forget password 
+ - authorization for get User Details
+ -
 
 ## Usage
 
@@ -54,5 +52,6 @@ This project is an ecommerce application aimed at providing a platform for onlin
 ## License
 
 This project is licensed under @Hasibul Islam
+
 # E-Commerce-Project
 # ECommerce-Project-2023

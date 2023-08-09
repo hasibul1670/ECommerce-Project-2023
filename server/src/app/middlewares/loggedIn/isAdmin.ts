@@ -4,10 +4,9 @@ import config from '../../../config';
 import { ApiError } from '../../../handlingError/ApiError';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 
-const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
+const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.cookies.refreshToken;
-
     if (!token || token === undefined) {
       throw new ApiError(
         StatusCodes.NOT_FOUND,
@@ -18,19 +17,21 @@ const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
       token,
       config.jwt.refresh_secret as string
     );
-
     if (!decoded) {
       throw new ApiError(
         StatusCodes.UNAUTHORIZED,
         'Invalid Access token!! Please Login Again!'
       );
     }
-
-    req.body.userId = decoded?.userDetails?._id;
-
+    if (!decoded?.userDetails.isAdmin) {
+      throw new ApiError(
+        StatusCodes.FORBIDDEN,
+        'Forbidden!! You must an Admin'
+      );
+    }
     next();
   } catch (error) {
     next(error);
   }
 };
-export default isLoggedIn;
+export default isAdmin;

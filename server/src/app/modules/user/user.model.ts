@@ -34,22 +34,19 @@ export const UserSchema = new Schema<IUser, UserModel>(
       type: String,
       required: true,
     },
-
     password: {
       type: String,
       required: true,
       select: 0,
     },
-
     isBanned: {
       type: Boolean,
       required: true,
-      select: 0,
     },
     isAdmin: {
       type: Boolean,
       required: true,
-      select: 0,
+      
     },
   },
   {

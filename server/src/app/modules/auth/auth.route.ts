@@ -1,6 +1,8 @@
 import express from 'express';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import auth from '../../middlewares/auth';
+import isLoggedIn from '../../middlewares/loggedIn/isLoggedIn';
+import isLoggedOut from '../../middlewares/loggedIn/isLoggedOut';
 import validateRequest from '../../middlewares/validateRequest';
 import { AuthController } from './auth.controller';
 import { AuthValidation } from './auth.validate';
@@ -9,14 +11,11 @@ const router = express.Router();
 
 router.post(
   '/login',
+  isLoggedOut,
   validateRequest(AuthValidation.loginZodSchema),
   AuthController.loginStudent
 );
-router.post(
-  '/logout',
-
-  AuthController.logoutUser
-);
+router.post('/logout', isLoggedIn, AuthController.logoutUser);
 
 router.post(
   '/refresh-token',

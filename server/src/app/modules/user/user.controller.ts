@@ -34,7 +34,6 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllUser = catchAsync(async (req: Request, res: Response) => {
-
   const result = await UserService.getAllUser();
   sendUserResponse(res, ' All Users retrieved successfully !', result);
 });
@@ -52,10 +51,24 @@ const verifyUser = catchAsync(async (req: Request, res: Response) => {
   sendUserResponse(res, 'User was registered successfully !', result);
 });
 
+const banUserById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const result = await UserService.banUserById(id);
+  sendUserResponse(res, 'User is banned successfully !', result);
+});
+const unbanUserById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await UserService.unbanUserById(id);
+  sendUserResponse(res, 'User is unbanned successfully !!', result);
+});
+
 export const UserController = {
   createUser,
   getAllUser,
+  unbanUserById,
   getSingleUser,
+  banUserById,
   verifyUser,
   updateUser,
 };
