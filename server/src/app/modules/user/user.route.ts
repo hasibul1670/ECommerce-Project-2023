@@ -35,8 +35,8 @@ router.patch(
   UserController.unbanUserById
 );
 router.patch(
-  '/forget-password/:id',isLoggedIn,isAdmin,
-  UserController.unbanUserById
+  '/forget-password/:id',
+  UserController.forgetPassword
 );
 
 

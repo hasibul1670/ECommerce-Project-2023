@@ -68,6 +68,12 @@ const updateUserPassword = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.updateUserPassword(user,data);
   sendUserResponse(res, 'User Password is Upadted successfully !!', result);
 });
+const forgetPassword = catchAsync(async (req: Request, res: Response) => {
+
+  const {email} = req.body;
+  const result = await UserService.forgetPassword(email);
+  sendUserResponse(res, 'User Password is reset successfully !!', result);
+});
 
 export const UserController = {
   createUser,
@@ -76,6 +82,7 @@ export const UserController = {
   getSingleUser,
   banUserById,
   verifyUser,
+  forgetPassword,
   updateUser,
   updateUserPassword,
 };

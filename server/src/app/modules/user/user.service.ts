@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 
+import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 import { Secret } from 'jsonwebtoken';
 import config from '../../../config';
@@ -11,7 +12,6 @@ import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import { sendEmailWithNodemailer } from '../../../helpers/sendEmail';
 import { IUser } from './user.interface';
 import { User } from './user.model';
-import bcrypt from 'bcrypt';
 
 const getSingleUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findById(id);
@@ -142,7 +142,10 @@ const updateUserPassword = async (user: IUser | any, payload: any) => {
     );
   }
   if (!isPasswordMatched) {
-    throw new ApiError(StatusCodes.UNAUTHORIZED, ' Old Password is  not matched !!');
+    throw new ApiError(
+      StatusCodes.UNAUTHORIZED,
+      ' Old Password is  not matched !!'
+    );
   }
   const filter = user._id;
   const newBcryptedPassword = await bcrypt.hash(
@@ -159,11 +162,46 @@ const updateUserPassword = async (user: IUser | any, payload: any) => {
   return result;
 };
 
+const forgetPassword = async (email: string) => {
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    throw new ApiError(
+      StatusCodes.NOT_FOUND,
+      ' User Not Found!! Please Sign Up !!'
+    );
+  }
+  //! Generate an access token
+  const accessToken = jwtHelpers.createToken(
+    { email },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string
+  );
+  //!prepare Email
+  const emailData = {
+    email,
+    subject: 'Reset Password  Email!',
+    html: `
+  <h2> Hello ${user.firstName}!</h2>
+  <p>
+  Please Click here to this Link to <a href="${config.client_url}/api/users/reset-password/${accessToken}" target="_blank">to reset your password </a> 
+  </p>
+  `,
+  };
+  //!send email with nodemailer!!!
+  try {
+    await sendEmailWithNodemailer(emailData);
+  } catch (error) {
+    throw new ApiError(500, 'Error Occurs while sending Reset Password Email');
+  }
+  return accessToken;
+};
+
 export const UserService = {
   createUser,
   getAllUser,
   unbanUserById,
   getSingleUser,
+  forgetPassword,
   updateUser,
   banUserById,
   verifyUser,
