@@ -69,10 +69,14 @@ const updateUserPassword = catchAsync(async (req: Request, res: Response) => {
   sendUserResponse(res, 'User Password is Upadted successfully !!', result);
 });
 const forgetPassword = catchAsync(async (req: Request, res: Response) => {
-
   const {email} = req.body;
   const result = await UserService.forgetPassword(email);
-  sendUserResponse(res, 'User Password is reset successfully !!', result);
+  sendUserResponse(res, 'Forget Password email is send successfully !!', result);
+});
+const resetPassword = catchAsync(async (req: Request, res: Response) => {
+  const data = req.body;
+  const result = await UserService.resetPassword(data);
+  sendUserResponse(res, ' Password reset successfully !!', result);
 });
 
 export const UserController = {
@@ -85,4 +89,5 @@ export const UserController = {
   forgetPassword,
   updateUser,
   updateUserPassword,
+  resetPassword
 };

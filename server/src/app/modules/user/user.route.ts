@@ -7,6 +7,11 @@ import isLoggedOut from '../../middlewares/loggedIn/isLoggedOut';
 import isAdmin from '../../middlewares/loggedIn/isAdmin';
 
 const router = express.Router();
+router.patch(
+  '/reset-password',
+  validateRequest(UserValidaion.forgetPasswordZodSchema),
+  UserController.resetPassword
+);
 
 router.patch(
   '/update-password',isLoggedIn,
@@ -34,8 +39,8 @@ router.patch(
   '/unban-user/:id',isLoggedIn,isAdmin,
   UserController.unbanUserById
 );
-router.patch(
-  '/forget-password/:id',
+router.post(
+  '/forget-password',
   UserController.forgetPassword
 );
 

@@ -15,3 +15,8 @@ export type IGenericResponse<T> = {
   };
   data: T;
 };
+
+export type IForgetPasswordType = {
+  token: string;
+  newPassword: string;
+};

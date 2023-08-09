@@ -28,8 +28,21 @@ const updateUserZodSchema = z.object({
     }),
   }),
 });
+const forgetPasswordZodSchema = z.object({
+  body: z.object({
+    token: z.string({
+      required_error: 'Token is required ',
+    }),
+    newPassword: z
+      .string({
+        required_error: 'Password is required ',
+      })
+      .length(6, { message: 'Password length should be 6 characters' }),
+  }),
+});
 
 export const UserValidaion = {
   updateUserZodSchema,
+  forgetPasswordZodSchema,
   createUserZodSchema,
 };

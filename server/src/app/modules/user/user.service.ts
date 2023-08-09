@@ -10,6 +10,7 @@ import { ApiError } from '../../../handlingError/ApiError';
 import { generateUserId } from '../../../helpers/generateId';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import { sendEmailWithNodemailer } from '../../../helpers/sendEmail';
+import { IForgetPasswordType } from '../../../interfaces/common';
 import { IUser } from './user.interface';
 import { User } from './user.model';
 
@@ -147,6 +148,7 @@ const updateUserPassword = async (user: IUser | any, payload: any) => {
       ' Old Password is  not matched !!'
     );
   }
+
   const filter = user._id;
   const newBcryptedPassword = await bcrypt.hash(
     newPassword,
@@ -196,6 +198,23 @@ const forgetPassword = async (email: string) => {
   return accessToken;
 };
 
+const resetPassword = async (data: IForgetPasswordType) => {
+  const { token, newPassword } = data;
+  const decoded = jwtHelpers.verifyToken(token, config.jwt.secret as string);
+  if (!decoded) {
+    throw new ApiError(StatusCodes.UNAUTHORIZED, 'Invalid Access token!! ');
+  }
+  const email = decoded?.email;
+  const newBcryptedPassword = await bcrypt.hash(
+    newPassword,
+    Number(config.default_salt_rounds)
+  );
+
+  const updateData = { $set: { password: newBcryptedPassword }, new: true };
+  const result = await User.findOneAndUpdate({ email: email }, updateData);
+  return result;
+};
+
 export const UserService = {
   createUser,
   getAllUser,
@@ -205,5 +224,6 @@ export const UserService = {
   updateUser,
   banUserById,
   verifyUser,
+  resetPassword,
   updateUserPassword,
 };
