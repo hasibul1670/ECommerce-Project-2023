@@ -8,6 +8,10 @@ import isAdmin from '../../middlewares/loggedIn/isAdmin';
 
 const router = express.Router();
 
+router.patch(
+  '/update-password',isLoggedIn,
+  UserController.updateUserPassword
+);
 router.post(
   '/create-user',isLoggedOut,
   validateRequest(UserValidaion.createUserZodSchema),
@@ -22,7 +26,6 @@ router.patch(
   validateRequest(UserValidaion.updateUserZodSchema),
   UserController.updateUser
 );
-
 router.patch(
   '/ban-user/:id',isLoggedIn,isAdmin,
   UserController.banUserById
@@ -31,5 +34,11 @@ router.patch(
   '/unban-user/:id',isLoggedIn,isAdmin,
   UserController.unbanUserById
 );
+router.patch(
+  '/forget-password/:id',isLoggedIn,isAdmin,
+  UserController.unbanUserById
+);
+
+
 
 export const UserRoutes = router;

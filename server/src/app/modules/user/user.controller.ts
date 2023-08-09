@@ -53,14 +53,20 @@ const verifyUser = catchAsync(async (req: Request, res: Response) => {
 
 const banUserById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-
   const result = await UserService.banUserById(id);
   sendUserResponse(res, 'User is banned successfully !', result);
 });
+
 const unbanUserById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await UserService.unbanUserById(id);
   sendUserResponse(res, 'User is unbanned successfully !!', result);
+});
+const updateUserPassword = catchAsync(async (req: Request, res: Response) => {
+  const user = req.body.userId;
+  const data = req.body;
+  const result = await UserService.updateUserPassword(user,data);
+  sendUserResponse(res, 'User Password is Upadted successfully !!', result);
 });
 
 export const UserController = {
@@ -71,4 +77,5 @@ export const UserController = {
   banUserById,
   verifyUser,
   updateUser,
+  updateUserPassword,
 };

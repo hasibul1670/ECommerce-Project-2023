@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
+
 import { StatusCodes } from 'http-status-codes';
 import { Secret } from 'jsonwebtoken';
 import config from '../../../config';
@@ -9,6 +11,7 @@ import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import { sendEmailWithNodemailer } from '../../../helpers/sendEmail';
 import { IUser } from './user.interface';
 import { User } from './user.model';
+import bcrypt from 'bcrypt';
 
 const getSingleUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findById(id);
@@ -127,6 +130,34 @@ const unbanUserById = async (id: string): Promise<IUser | null> => {
   });
   return result;
 };
+const updateUserPassword = async (user: IUser | any, payload: any) => {
+  const email = user.email;
+  const { oldPassword, newPassword } = payload;
+  const loggedInUser = await User.isUserExist(email);
+  let isPasswordMatched = false;
+  if (user) {
+    isPasswordMatched = await User.isPasswordMatched(
+      oldPassword,
+      loggedInUser.password
+    );
+  }
+  if (!isPasswordMatched) {
+    throw new ApiError(StatusCodes.UNAUTHORIZED, ' Old Password is  not matched !!');
+  }
+  const filter = user._id;
+  const newBcryptedPassword = await bcrypt.hash(
+    newPassword,
+    Number(config.default_salt_rounds)
+  );
+  const updateData = { $set: { password: newBcryptedPassword } };
+  let result;
+  if (isPasswordMatched) {
+    result = await User.findByIdAndUpdate({ _id: filter }, updateData, {
+      new: true,
+    });
+  }
+  return result;
+};
 
 export const UserService = {
   createUser,
@@ -136,4 +167,5 @@ export const UserService = {
   updateUser,
   banUserById,
   verifyUser,
+  updateUserPassword,
 };

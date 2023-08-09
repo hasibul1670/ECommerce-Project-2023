@@ -28,6 +28,7 @@ const loginStudent = async (
   if (!user) {
     throw new ApiError(StatusCodes.NOT_FOUND, 'User does not exist');
   }
+
   let isPasswordMatched = false;
   if (user) {
     isPasswordMatched = await User.isPasswordMatched(password, user.password);
@@ -35,6 +36,7 @@ const loginStudent = async (
   if (!isPasswordMatched) {
     throw new ApiError(StatusCodes.UNAUTHORIZED, 'Password is incorrect');
   }
+  
 
   // Generate an access token
   const accessToken = jwtHelpers.createToken(
