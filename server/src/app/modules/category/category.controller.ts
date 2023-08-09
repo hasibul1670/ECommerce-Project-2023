@@ -3,11 +3,15 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
 import { default as sendReponse } from '../../../shared/sendResponse';
-import { IUser } from './user.interface';
-import { UserService } from './user.service';
+import { ICategory } from './category.interface';
+import { CategoryService } from './category.service';
 
-const sendUserResponse = async (res: Response, message: string, data: any) => {
-  sendReponse<IUser>(res, {
+const sendCategoryResponse = async (
+  res: Response,
+  message: string,
+  data: any
+) => {
+  sendReponse<ICategory>(res, {
     statusCode: StatusCodes.OK,
     success: true,
     message,
@@ -15,43 +19,35 @@ const sendUserResponse = async (res: Response, message: string, data: any) => {
   });
 };
 
-const createUser = catchAsync(async (req: Request, res: Response) => {
-  const { ...User } = req.body;
-  const { email } = req.body;
+const createCategory = catchAsync(async (req: Request, res: Response) => {
+  const { ...Category } = req.body;
+  console.log('Hello', Category);
+  const result = await CategoryService.createCategory(Category);
+  sendCategoryResponse(res, `Category is created successfully`, result);
+});
 
-  const result = await UserService.createUser(User);
-  sendUserResponse(
+const getSingleCategory = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await CategoryService.getSingleCategory(id);
+  sendCategoryResponse(
     res,
-    `Please Go to Your ${email} for completing your Registration Process `,
+    ' Single Category retrieved successfully !',
     result
   );
 });
 
-const getSingleUser = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const result = await UserService.getSingleUser(id);
-  sendUserResponse(res, ' Single User retrieved successfully !', result);
-});
-
-const updateUser = catchAsync(async (req: Request, res: Response) => {
+const updateCategory = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const updatedData = req.body;
 
-  const result = await UserService.updateUser(id, updatedData);
+  const result = await CategoryService.updateCategory(id, updatedData);
 
-  sendUserResponse(res, 'User updated successfully !', result);
+  sendCategoryResponse(res, 'Category updated successfully !', result);
 });
 
-const verifyUser = catchAsync(async (req: Request, res: Response) => {
-  const {token}= req.body;
-  const result = await UserService.verifyUser(token);
-  sendUserResponse(res, 'User was registered successfully !', result);
-});
+export const CategoryController = {
+  createCategory,
+  getSingleCategory,
 
-
-export const UserController = {
-  createUser,
-  getSingleUser,
-  verifyUser,
-  updateUser,
+  updateCategory,
 };

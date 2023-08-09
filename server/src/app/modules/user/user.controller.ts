@@ -33,24 +33,28 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
   sendUserResponse(res, ' Single User retrieved successfully !', result);
 });
 
+const getAllUser = catchAsync(async (req: Request, res: Response) => {
+
+  const result = await UserService.getAllUser();
+  sendUserResponse(res, ' All Users retrieved successfully !', result);
+});
+
 const updateUser = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const updatedData = req.body;
-
   const result = await UserService.updateUser(id, updatedData);
-
   sendUserResponse(res, 'User updated successfully !', result);
 });
 
 const verifyUser = catchAsync(async (req: Request, res: Response) => {
-  const {token}= req.body;
+  const { token } = req.body;
   const result = await UserService.verifyUser(token);
   sendUserResponse(res, 'User was registered successfully !', result);
 });
 
-
 export const UserController = {
   createUser,
+  getAllUser,
   getSingleUser,
   verifyUser,
   updateUser,

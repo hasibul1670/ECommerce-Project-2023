@@ -1,22 +1,24 @@
 import express from 'express';
+import { ENUM_USER_ROLE } from '../../../enums/user';
+import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
-import { UserController } from './user.controller';
-import { UserValidaion } from './user.validation';
+import { CategoryController } from './category.controller';
+import { CategoryValidaion } from './category.validation';
 
 const router = express.Router();
 
 router.post(
-  '/create-user',
-  validateRequest(UserValidaion.createUserZodSchema),
-  UserController.createUser
+  '/create-category',
+  auth(ENUM_USER_ROLE.ADMIN),
+  validateRequest(CategoryValidaion.createCategoryZodSchema),
+  CategoryController.createCategory
 );
-router.get('/:id', UserController.getSingleUser);
-router.post('/verify-user', UserController.verifyUser);
+router.get('/:slug', CategoryController.getSingleCategory);
 
 router.patch(
   '/:id',
-  validateRequest(UserValidaion.updateUserZodSchema),
-  UserController.updateUser
+  validateRequest(CategoryValidaion.updateCategoryZodSchema),
+  CategoryController.updateCategory
 );
 
-export const UserRoutes = router;
+export const CategoryRoutes = router;

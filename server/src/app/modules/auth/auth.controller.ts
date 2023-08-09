@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import config from '../../../config';
 import catchAsync from '../../../shared/catchAsync';
@@ -29,6 +29,18 @@ const loginStudent = catchAsync(async (req: Request, res: Response) => {
   sendLoginResponse(res, 'User Loggedin successfully !', others);
 });
 
+const logoutUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      res.clearCookie('refreshToken');
+    } catch (error) {
+      next(error);
+    }
+
+    sendLoginResponse(res, 'User Logout successfully !', null);
+  }
+);
+
 const refreshToken = catchAsync(async (req: Request, res: Response) => {
   const { refreshToken } = req.cookies;
   const result = await AuthService.refreshToken(refreshToken);
@@ -47,7 +59,6 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
 const changePassword = catchAsync(async (req: Request, res: Response) => {
   const { ...passwordData } = req.body;
 
@@ -61,10 +72,9 @@ const changePassword = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
-
 export const AuthController = {
   loginStudent,
   refreshToken,
-  changePassword
+  logoutUser,
+  changePassword,
 };

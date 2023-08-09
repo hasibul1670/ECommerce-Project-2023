@@ -22,7 +22,8 @@ const loginStudent = async (
 
   const user = await User.isUserExist(email);
 
-  const userDetails = await User.findOne({ email });
+  const userDetails = await User.findOne({email: email });
+ 
 
   if (!user) {
     throw new ApiError(StatusCodes.NOT_FOUND, 'User does not exist');
@@ -37,7 +38,7 @@ const loginStudent = async (
 
   // Generate an access token
   const accessToken = jwtHelpers.createToken(
-    { email, userDetails },
+    { email, user },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
   );
@@ -55,6 +56,9 @@ const loginStudent = async (
     refreshToken,
   };
 };
+
+
+
 
 const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
   let verifiedToken = null;

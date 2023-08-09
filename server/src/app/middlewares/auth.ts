@@ -20,6 +20,7 @@ const auth =
       verifiedUser = jwtHelpers.verifyToken(token, config.jwt.secret as Secret);
 
       req.user = verifiedUser;
+      console.log('Hello',verifiedUser);
       if (
         requiredRoles.length &&
         !requiredRoles.includes(verifiedUser.userRole)

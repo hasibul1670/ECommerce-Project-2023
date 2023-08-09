@@ -14,6 +14,10 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
   const result = await User.findById(id);
   return result;
 };
+const getAllUser = async () => {
+  const result = await User.find({});
+  return result;
+};
 
 const updateUser = async (
   id: string,
@@ -112,6 +116,7 @@ const verifyUser = async (token: string) => {
 };
 export const UserService = {
   createUser,
+  getAllUser,
   getSingleUser,
   updateUser,
   verifyUser,
